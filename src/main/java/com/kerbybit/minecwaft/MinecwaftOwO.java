@@ -20,7 +20,7 @@ public class MinecwaftOwO {
             Pattern.compile(",( |$)").matcher("")
     };
     private static final HashMap<Matcher, String> matchers = new HashMap<Matcher, String>(){{
-        put(Pattern.compile("(?:l|r)").matcher(""), "w");
+        put(Pattern.compile("(?<!§)(?:l|r)").matcher(""), "w");
         put(Pattern.compile("(?:L|R)").matcher(""), "W");
         put(Pattern.compile("n([aeiou])").matcher(""), "ny$1");
         put(Pattern.compile("N([aeiou])").matcher(""), "Ny$1");
