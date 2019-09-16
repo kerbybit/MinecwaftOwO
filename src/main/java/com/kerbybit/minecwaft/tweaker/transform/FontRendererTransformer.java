@@ -1,10 +1,7 @@
 package com.kerbybit.minecwaft.tweaker.transform;
 
-import com.kerbybit.minecwaft.MinecwaftOwO;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-
-import java.util.ListIterator;
 
 public class FontRendererTransformer implements ITransformer {
     @Override
@@ -17,9 +14,10 @@ public class FontRendererTransformer implements ITransformer {
         for (MethodNode methodNode : classNode.methods) {
             String methodName = mapMethodName(classNode, methodNode);
 
-            if (methodName.equalsIgnoreCase("renderStringAtPos") || methodName.equalsIgnoreCase("func_78255_a")) {
-                methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeTextHook());
-            } else if (methodName.equalsIgnoreCase("getStringWidth") || methodName.equalsIgnoreCase("func_78256_a")) {
+            if (methodName.equalsIgnoreCase("renderStringAtPos")
+                    || methodName.equalsIgnoreCase("func_78255_a")
+                    || methodName.equalsIgnoreCase("getStringWidth")
+                    || methodName.equalsIgnoreCase("func_78256_a")) {
                 methodNode.instructions.insertBefore(methodNode.instructions.getFirst(), changeTextHook());
             }
         }
@@ -27,10 +25,6 @@ public class FontRendererTransformer implements ITransformer {
 
     private InsnList changeTextHook() {
         InsnList insnList = new InsnList();
-
-        // ALOAD 1
-        // INVOKESTATIC com/kerbybit/minecwaft/MinecwaftOwO.makeOwO (Ljava/lang/String;)Ljava/lang/String;
-        // ASTORE 1
 
         insnList.add(new VarInsnNode(Opcodes.ALOAD, 1));
         insnList.add(new MethodInsnNode(

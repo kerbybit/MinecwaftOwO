@@ -13,7 +13,6 @@ public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
     static final String VERSION = "1.0";
 
-    //private static final String[] faces = new String[]{"(*^ω^)", "(◕‿◕✿)", "(◕ᴥ◕)", "ʕ•ᴥ•ʔ", "ʕ￫ᴥ￩ʔ", "(*^.^*)", "owo", "(｡♥‿♥｡)", "uwu", "(*￣з￣)", ">w<", "^w^", "(つ✧ω✧)つ", "(/ =ω=)/"};
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "owo", "uwu", ">w<", "^w^", "(/ =w=)/"};
     private static final Matcher[] faceText = new Matcher[]{
             Pattern.compile("!( |$)").matcher(""),
