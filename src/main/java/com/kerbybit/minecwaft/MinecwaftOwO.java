@@ -1,13 +1,10 @@
 package com.kerbybit.minecwaft;
 
-import io.netty.util.internal.StringUtil;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,38 +15,33 @@ public class MinecwaftOwO {
 
     //private static final String[] faces = new String[]{"(*^ω^)", "(◕‿◕✿)", "(◕ᴥ◕)", "ʕ•ᴥ•ʔ", "ʕ￫ᴥ￩ʔ", "(*^.^*)", "owo", "(｡♥‿♥｡)", "uwu", "(*￣з￣)", ">w<", "^w^", "(つ✧ω✧)つ", "(/ =ω=)/"};
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "owo", "uwu", ">w<", "^w^", "(/ =w=)/"};
-    private static final Matcher pattern1 = Pattern.compile("(?:l|r)").matcher("");
-    private static final Matcher pattern2 = Pattern.compile("(?:L|R)").matcher("");
-    private static final Matcher pattern3 = Pattern.compile("n([aeiou])").matcher("");
-    private static final Matcher pattern4 = Pattern.compile("N([aeiou])").matcher("");
-    private static final Matcher pattern5 = Pattern.compile("N([AEIOU])").matcher("");
-
-    @EventHandler
-    public void init(FMLInitializationEvent event) {
-
-    }
+    private static final Matcher[] faceText = new Matcher[]{
+            Pattern.compile("!( |$)").matcher(""),
+            Pattern.compile("\\.( |$)").matcher(""),
+            Pattern.compile(",( |$)").matcher("")
+    };
+    private static final HashMap<Matcher, String> matchers = new HashMap<Matcher, String>(){{
+        put(Pattern.compile("(?:l|r)").matcher(""), "w");
+        put(Pattern.compile("(?:L|R)").matcher(""), "W");
+        put(Pattern.compile("n([aeiou])").matcher(""), "ny$1");
+        put(Pattern.compile("N([aeiou])").matcher(""), "Ny$1");
+        put(Pattern.compile("N([AEIOU])").matcher(""), "NY$1");
+    }};
 
     public static String makeOwO(String string) {
-        
-
         string = StringUtils.replace(string, "th","d");
         string = StringUtils.replace(string, "Th","D");
         string = StringUtils.replace(string, " is"," ish");
         string = StringUtils.replace(string, " Is"," Ish");
         string = StringUtils.replace(string, "ove", "uv");
 
+        for (Map.Entry<Matcher, String> match : matchers.entrySet()) {
+            string = match.getKey().reset(string).replaceAll(match.getValue());
+        }
 
-        string = pattern1.reset(string).replaceAll("w");
-        string = pattern2.reset(string).replaceAll("W");
-        string = pattern3.reset(string).replaceAll("ny$1");
-        string = pattern4.reset(string).replaceAll("Ny$1");
-        string = pattern5.reset(string).replaceAll("Ny$1");
-
-
-
-        string = string.replaceAll("!( |$)", getFace(string));
-        string = string.replaceAll("\\.( |$)", getFace(string));
-        string = string.replaceAll(",( |$)", getFace(string));
+        for (Matcher match : faceText) {
+            string = match.reset(string).replaceAll(getFace(string));
+        }
 
         return string;
     }
