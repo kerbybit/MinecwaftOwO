@@ -1,6 +1,8 @@
 package com.kerbybit.minecwaft;
 
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.regex.Pattern;
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
     static final String VERSION = "1.1";
+    public static boolean toggled = true;
 
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
     private static final Matcher[] faceText = new Matcher[]{
@@ -27,7 +30,14 @@ public class MinecwaftOwO {
         put(Pattern.compile("N([AEIOU])").matcher(""), "NY$1");
     }};
 
+    @Mod.EventHandler
+    private void init(FMLInitializationEvent event) {
+        ClientCommandHandler.instance.registerCommand(new CommandOwO());
+    }
+
     public static String makeOwO(String string) {
+        if (!toggled) return string;
+
         string = StringUtils.replace(string, "th","d");
         string = StringUtils.replace(string, "Th","D");
         string = StringUtils.replace(string, " is"," ish");
