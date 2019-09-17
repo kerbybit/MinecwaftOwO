@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 @Mod(modid = MinecwaftOwO.MODID, version = MinecwaftOwO.VERSION)
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
-    static final String VERSION = "1.1";
+    static final String VERSION = "1.2";
     public static boolean toggled = true;
 
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
