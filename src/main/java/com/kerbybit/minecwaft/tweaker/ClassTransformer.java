@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.kerbybit.minecwaft.tweaker.transform.FontRendererTransformer;
 import com.kerbybit.minecwaft.tweaker.transform.ITransformer;
+import com.kerbybit.minecwaft.tweaker.transform.RenderComponentsTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +21,7 @@ public class ClassTransformer implements IClassTransformer {
 
     public ClassTransformer() {
         registerTransformer(new FontRendererTransformer());
+        registerTransformer(new RenderComponentsTransformer());
     }
 
     private void registerTransformer(ITransformer transformer) {

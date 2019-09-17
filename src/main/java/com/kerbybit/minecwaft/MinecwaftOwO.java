@@ -11,18 +11,18 @@ import java.util.regex.Pattern;
 @Mod(modid = MinecwaftOwO.MODID, version = MinecwaftOwO.VERSION)
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
-    static final String VERSION = "1.0";
+    static final String VERSION = "1.1";
 
-    private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "owo", "uwu", ">w<", "^w^", "(/ =w=)/"};
+    private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
     private static final Matcher[] faceText = new Matcher[]{
             Pattern.compile("!( |$)").matcher(""),
             Pattern.compile("\\.( |$)").matcher(""),
             Pattern.compile(",( |$)").matcher("")
     };
     private static final HashMap<Matcher, String> matchers = new HashMap<Matcher, String>(){{
-        put(Pattern.compile("(?<!§)(?:l|r)").matcher(""), "w");
+        put(Pattern.compile("(?<!\u00A7)(?:l|r)").matcher(""), "w");
         put(Pattern.compile("(?:L|R)").matcher(""), "W");
-        put(Pattern.compile("n([aeiou])").matcher(""), "ny$1");
+        put(Pattern.compile("(?<!\u00A7|\\\\)n([aeiou])").matcher(""), "ny$1");
         put(Pattern.compile("N([aeiou])").matcher(""), "Ny$1");
         put(Pattern.compile("N([AEIOU])").matcher(""), "NY$1");
     }};
@@ -39,13 +39,9 @@ public class MinecwaftOwO {
         }
 
         for (Matcher match : faceText) {
-            string = match.reset(string).replaceAll(getFace(string));
+            string = match.reset(string).replaceAll(faces[string.length() % faces.length]);
         }
 
         return string;
-    }
-
-    private static String getFace(String string) {
-        return faces[string.length() % faces.length];
     }
 }
