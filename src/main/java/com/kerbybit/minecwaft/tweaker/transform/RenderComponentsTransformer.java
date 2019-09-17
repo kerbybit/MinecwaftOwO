@@ -24,8 +24,8 @@ public class RenderComponentsTransformer implements ITransformer {
                     AbstractInsnNode next = iterator.next();
                     if (next instanceof MethodInsnNode) {
                         MethodInsnNode methodInsnNode = (MethodInsnNode) next;
-                        if (methodInsnNode.owner.equals("net/minecraft/util/IChatComponent")
-                                && (methodInsnNode.name.equals("getUnformattedTextForChat") || methodInsnNode.name.equals("func_150261_e"))
+                        if ((methodInsnNode.owner.equals("net/minecraft/util/IChatComponent") || methodInsnNode.owner.equals("eu"))
+                                && (methodInsnNode.name.equals("getUnformattedTextForChat") || methodInsnNode.name.equals("e"))
                                 && methodInsnNode.desc.equals("()Ljava/lang/String;")) {
                             iterator.add(changeTextHook());
                         }
