@@ -73,6 +73,8 @@ public class MinecwaftOwO {
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
+        if (!toggled) return;
+
         FontRenderer fontrenderer = event.renderer.getFontRendererFromRenderManager();
         float f1 = 0.016666668F * 1.6F;
         GlStateManager.pushMatrix();
