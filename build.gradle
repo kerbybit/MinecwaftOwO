@@ -40,7 +40,11 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+def cache2kVersion = '1.2.3.Final'
+
 dependencies {
+    implementation "org.cache2k:cache2k-api:${cache2kVersion}"
+    implementation "org.cache2k:cache2k-core:${cache2kVersion}"
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

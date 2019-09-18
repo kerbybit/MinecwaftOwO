@@ -1,9 +1,12 @@
 package com.kerbybit.minecwaft;
 
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.commons.lang3.StringUtils;
+import org.cache2k.Cache;
+import org.cache2k.Cache2kBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +18,8 @@ public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
     static final String VERSION = "1.2";
     public static boolean toggled = true;
+
+
 
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
     private static final Matcher[] faceText = new Matcher[]{
@@ -30,28 +35,36 @@ public class MinecwaftOwO {
         put(Pattern.compile("N([AEIOU])").matcher(""), "NY$1");
     }};
 
+    public static Cache<String, String> cache = new Cache2kBuilder<String, String>() {}
+            .name("MinecwaftOwO")
+            .eternal(true)
+            .entryCapacity(25000)
+            .loader((string) -> {
+                string = StringUtils.replace(string, "th","d");
+                string = StringUtils.replace(string, "Th","D");
+                string = StringUtils.replace(string, " is"," ish");
+                string = StringUtils.replace(string, " Is"," Ish");
+                string = StringUtils.replace(string, "ove", "uv");
+
+                for (Map.Entry<Matcher, String> match : matchers.entrySet()) {
+                    string = match.getKey().reset(string).replaceAll(match.getValue());
+                }
+
+                for (Matcher match : faceText) {
+                    string = match.reset(string).replaceAll(faces[string.length() % faces.length]);
+                }
+                return string;
+            })
+            .build();
+
     @Mod.EventHandler
     private void init(FMLInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new CommandOwO());
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static String makeOwO(String string) {
         if (!toggled) return string;
-
-        string = StringUtils.replace(string, "th","d");
-        string = StringUtils.replace(string, "Th","D");
-        string = StringUtils.replace(string, " is"," ish");
-        string = StringUtils.replace(string, " Is"," Ish");
-        string = StringUtils.replace(string, "ove", "uv");
-
-        for (Map.Entry<Matcher, String> match : matchers.entrySet()) {
-            string = match.getKey().reset(string).replaceAll(match.getValue());
-        }
-
-        for (Matcher match : faceText) {
-            string = match.reset(string).replaceAll(faces[string.length() % faces.length]);
-        }
-
-        return string;
+        return cache.get(string);
     }
 }
