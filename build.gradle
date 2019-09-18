@@ -10,8 +10,11 @@ buildscript {
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
     }
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 /*
@@ -96,4 +99,12 @@ jar {
                 "ModSide": "CLIENT"
         )
     }
+}
+
+reobf {
+    shadowJar { mappingType = 'SEARGE' }
+}
+
+shadowJar {
+    classifier ''
 }
