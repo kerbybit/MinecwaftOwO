@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.cache2k.Cache;
 import org.cache2k.Cache2kBuilder;
@@ -26,8 +27,10 @@ import java.util.regex.Pattern;
 @Mod(modid = MinecwaftOwO.MODID, version = MinecwaftOwO.VERSION)
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
-    static final String VERSION = "1.3";
+    static final String VERSION = "1.4";
     public static boolean toggled = true;
+
+    private static float ticks = 0;
 
     private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
     private static final List<Matcher> faceText = Arrays.asList(
@@ -72,6 +75,12 @@ public class MinecwaftOwO {
     }
 
     @SubscribeEvent
+    public void tick(TickEvent event) {
+        ticks+=0.0005;
+        if (ticks > 25) ticks = 0;
+    }
+
+    @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
         if (!toggled) return;
 
@@ -80,14 +89,17 @@ public class MinecwaftOwO {
         GlStateManager.pushMatrix();
 
         EntityPlayer entity = event.entityPlayer;
-        String face = "UwU";
+        String face = "OwO";
         Color color = Color.WHITE;
 
-        if (entity.hurtResistantTime > 0) {
+        if (entity.getHealth() == 0) {
+            face = "xwx";
+            color = Color.RED;
+        } else if (entity.hurtResistantTime > 0) {
             face = ">w<";
             color = Color.RED;
-        } else if (entity.prevPosX != entity.posX || entity.prevPosY != entity.posY || entity.prevPosZ != entity.posZ) {
-            face = "OwO";
+        } else if (ticks % entity.getName().length() < 0.1) {
+            face = "-w-";
         }
 
         Vec3 look = event.entity.getLook(event.partialRenderTick);
