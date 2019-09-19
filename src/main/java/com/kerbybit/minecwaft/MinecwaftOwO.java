@@ -84,11 +84,13 @@ public class MinecwaftOwO {
     public void renderPlayer(RenderPlayerEvent.Post event) {
         if (!toggled) return;
 
+        EntityPlayer entity = event.entityPlayer;
+        if (entity.isInvisible()) return;
+
         FontRenderer fontrenderer = event.renderer.getFontRendererFromRenderManager();
         float f1 = 0.016666668F * 1.6F;
         GlStateManager.pushMatrix();
 
-        EntityPlayer entity = event.entityPlayer;
         String face = "OwO";
         Color color = Color.WHITE;
 
