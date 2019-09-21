@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @Mod(modid = MinecwaftOwO.MODID, version = MinecwaftOwO.VERSION)
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
-    static final String VERSION = "1.4";
+    static final String VERSION = "1.5";
     public static boolean toggled = true;
 
     private static float ticks = 0;
