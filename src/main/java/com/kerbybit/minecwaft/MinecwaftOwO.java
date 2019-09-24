@@ -29,6 +29,7 @@ public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
     static final String VERSION = "1.5";
     public static boolean toggled = true;
+    public static HashMap<String, String> getFace = new HashMap<String, String>(); 
 
     private static float ticks = 0;
 
@@ -82,7 +83,10 @@ public class MinecwaftOwO {
 
     @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
-        if (!toggled) return;
+        if (!toggled) {
+            getFace.clear();
+            return;
+        }
 
         EntityPlayer entity = event.entityPlayer;
         if (entity.isInvisible()) return;
@@ -90,8 +94,36 @@ public class MinecwaftOwO {
         FontRenderer fontrenderer = event.renderer.getFontRendererFromRenderManager();
         float f1 = 0.016666668F * 1.6F;
         GlStateManager.pushMatrix();
+        
+        /*
+        I haven't tested this part yet since forge is being poo poo brain and wont decompile.
+        */
+        int random = ThreadLocalRandom.current().nextInt(1, 7);
 
-        String face = "OwO";
+        if (!getFace.containsKey(entity.getName())) {
+        	switch (random) {
+        		case 1:
+        			getFace.put(entity.getName(), "OwO");
+        			
+        		case 2:
+        			getFace.put(entity.getName(), "owo");
+        			
+        		case 3:
+        			getFace.put(entity.getName(), "UwU");
+        			
+        		case 4:
+        			getFace.put(entity.getName(), "uwu");
+        			
+        		case 5:
+        			getFace.put(entity.getName(), "OxO");
+        			
+        		default:
+        			getFace.put(entity.getName(), "oxo");
+        	}
+        }
+        
+        String face = getFace.get(entity.getName());
+        
         Color color = Color.WHITE;
 
         if (entity.getHealth() == 0) {
