@@ -8,6 +8,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,27 +28,25 @@ import java.util.regex.Pattern;
 @Mod(modid = MinecwaftOwO.MODID, version = MinecwaftOwO.VERSION)
 public class MinecwaftOwO {
     static final String MODID = "MinecwaftOwO";
-    static final String VERSION = "1.5";
-    public static boolean toggled = true;
-    public static HashMap<String, String> getFace = new HashMap<String, String>(); 
+    static final String VERSION = "1.6";
+    static boolean toggled = true;
 
-    private static float ticks = 0;
-
-    private static final String[] faces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
-    private static final List<Matcher> faceText = Arrays.asList(
+    private static final String[] punctuationFaces = new String[]{"(*^w^)", "(*^.^*)", "(OuO)", "(OwO)", "(UwU)", "(>w<)", "(^w^)", "(^u^)", "(/ =w=)/"};
+    private static final List<Matcher> punctuations = Arrays.asList(
             Pattern.compile("!( |$)").matcher(""),
             Pattern.compile("\\.( |$)").matcher(""),
             Pattern.compile(",( |$)").matcher("")
     );
+
     private static final HashMap<Matcher, String> matchers = new HashMap<Matcher, String>(){{
-        put(Pattern.compile("(?<!\u00A7)(?:l|r)").matcher(""), "w");
-        put(Pattern.compile("(?:L|R)").matcher(""), "W");
-        put(Pattern.compile("(?<!\u00A7|\\\\)n([aeiou])").matcher(""), "ny$1");
+        put(Pattern.compile("(?<!\u00A7)[lr]").matcher(""), "w");
+        put(Pattern.compile("[LR]").matcher(""), "W");
+        put(Pattern.compile("(?<![§\\\\oO])n([aeiou])").matcher(""), "ny$1");
         put(Pattern.compile("N([aeiou])").matcher(""), "Ny$1");
         put(Pattern.compile("N([AEIOU])").matcher(""), "NY$1");
     }};
 
-    public static Cache<String, String> cache = new Cache2kBuilder<String, String>() {}
+    private static Cache<String, String> cache = new Cache2kBuilder<String, String>() {}
             .name("MinecwaftOwO")
             .eternal(true)
             .entryCapacity(25000)
@@ -62,12 +61,23 @@ public class MinecwaftOwO {
                     string = match.getKey().reset(string).replaceAll(match.getValue());
                 }
 
-                for (int i = 0; i < faceText.size(); i++) {
-                    string = faceText.get(i).reset(string).replaceAll(" " + faces[string.length() % faces.length] + " ");
+                for (Matcher punctuation : punctuations) {
+                    string = punctuation.reset(string).replaceAll(" " + punctuationFaces[string.length() % punctuationFaces.length] + " ");
                 }
                 return string;
             })
             .build();
+
+    private double ticks = 0;
+    private Face[] faces = new Face[] {
+            new Face("OwO", "-w-", ">w<", "xwx"),
+            new Face("owo", "-w-", ">w<", "xwx"),
+            new Face("UwU", "-w-", ">m<", "xmx"),
+            new Face("OuO", "^u^", ">n<", "vnv"),
+            new Face("ono", "-n-", ">n<", "xnx"),
+            new Face("uwu", "-u-", ">m<", "xmx")
+    };
+    private HashMap<EntityPlayer, Face> faceList = new HashMap<>();
 
     @Mod.EventHandler
     private void init(FMLInitializationEvent event) {
@@ -82,59 +92,41 @@ public class MinecwaftOwO {
     }
 
     @SubscribeEvent
+    public void worldUnload(WorldEvent.Unload event) {
+        faceList.clear();
+    }
+
+    @SubscribeEvent
     public void renderPlayer(RenderPlayerEvent.Post event) {
         if (!toggled) {
-            getFace.clear();
+            faceList.clear();
             return;
         }
 
         EntityPlayer entity = event.entityPlayer;
         if (entity.isInvisible()) return;
 
-        FontRenderer fontrenderer = event.renderer.getFontRendererFromRenderManager();
-        float f1 = 0.016666668F * 1.6F;
-        GlStateManager.pushMatrix();
-        
-        /*
-        I haven't tested this part yet since forge is being poo poo brain and wont decompile.
-        */
-        int random = ThreadLocalRandom.current().nextInt(1, 7);
-
-        if (!getFace.containsKey(entity.getName())) {
-        	switch (random) {
-        		case 1:
-        			getFace.put(entity.getName(), "OwO");
-        			
-        		case 2:
-        			getFace.put(entity.getName(), "owo");
-        			
-        		case 3:
-        			getFace.put(entity.getName(), "UwU");
-        			
-        		case 4:
-        			getFace.put(entity.getName(), "uwu");
-        			
-        		case 5:
-        			getFace.put(entity.getName(), "OxO");
-        			
-        		default:
-        			getFace.put(entity.getName(), "oxo");
-        	}
+        if (!faceList.containsKey(entity)) {
+            faceList.put(entity, faces[faceList.size() % faces.length]);
         }
-        
-        String face = getFace.get(entity.getName());
-        
+
+        Face face = faceList.get(entity);
+        String toRender = face.open;
         Color color = Color.WHITE;
 
         if (entity.getHealth() == 0) {
-            face = "xwx";
+            toRender = face.dead;
             color = Color.RED;
         } else if (entity.hurtResistantTime > 0) {
-            face = ">w<";
+            toRender = face.hurt;
             color = Color.RED;
         } else if (ticks % entity.getName().length() < 0.1) {
-            face = "-w-";
+            toRender = face.closed;
         }
+
+        FontRenderer fontrenderer = event.renderer.getFontRendererFromRenderManager();
+        float f1 = 0.016666668F * 1.6F;
+        GlStateManager.pushMatrix();
 
         Vec3 look = event.entity.getLook(event.partialRenderTick);
         look = new Vec3(look.xCoord / 3.5, look.yCoord / 3.5, look.zCoord / 3.5);
@@ -189,7 +181,7 @@ public class MinecwaftOwO {
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
-        renderString(fontrenderer, face, color);
+        renderString(fontrenderer, toRender, color);
 
         GlStateManager.enableLighting();
         GlStateManager.disableBlend();
@@ -216,5 +208,19 @@ public class MinecwaftOwO {
     public static String makeOwO(String string) {
         if (!toggled) return string;
         return cache.get(string);
+    }
+
+    private class Face {
+        String open;
+        String closed;
+        String hurt;
+        String dead;
+
+        private Face(String open, String closed, String hurt, String dead) {
+            this.open = open;
+            this.closed = closed;
+            this.hurt = hurt;
+            this.dead = dead;
+        }
     }
 }
