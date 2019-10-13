@@ -1,4 +1,6 @@
 # MinecwaftOwO
+![GitHub All Releases](https://img.shields.io/github/downloads/kerbybit/MinecwaftOwO/total)
+
 Pwease siw downwoad my minecwaft mod (^w^)
 
 ![wapis wazuwi bwock](https://i.imgur.com/WbaxAoG.png)
